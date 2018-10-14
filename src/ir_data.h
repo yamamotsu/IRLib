@@ -16,6 +16,7 @@ public:
 private:
     byte _buffer[_irdata_buffer_size];
     long _data_len_bits;
+    long _bit_itr;
 public:
     IRDataFormat format;
     bool is_repeat_code;
@@ -23,6 +24,7 @@ public:
     IRData();
     void clear();
     long append(byte databit);
+    int fetch();
     const int capacity();
     const int bitLengh();
     const int get(int index);

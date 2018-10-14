@@ -6,6 +6,7 @@ IRData::IRData()
 {
     format = IRDataFormat::AUTO;
     is_repeat_code = false;
+    _bit_itr = 0;
 }
 
 const int IRData::capacity()
@@ -27,6 +28,7 @@ void IRData::clear()
     }
     _data_len_bits = 0;
     is_repeat_code = false;
+    _bit_itr = 0;
 }
 
 long IRData::append(byte databit)
@@ -38,6 +40,21 @@ long IRData::append(byte databit)
         return ++_data_len_bits;
     }
     return -1;
+}
+
+int IRData::fetch()
+{
+    if(_bit_itr >= bitLengh())
+    {
+        return -1;
+    }
+
+    long byte_idx = _bit_itr >> 3;
+    byte bit_idx = 7 - (_bit_itr & 0x7);
+
+    int bit =  (_buffer[byte_idx] >> bit_idx) & 0x1;
+    _bit_itr++;
+    return bit;
 }
 
 const int IRData::get(int index)
