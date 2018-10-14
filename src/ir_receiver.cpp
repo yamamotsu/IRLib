@@ -109,6 +109,10 @@ int IRReceiver::_scanLeaderCode(IRData &data, long high_time, long low_time, boo
             return -1;
         }
     }
+    else
+    {
+        return -1;
+    }
     return 0;
 }
 
@@ -160,6 +164,11 @@ int IRReceiver::getIRData(IRData &data, long timeout_ms)
             if(low_time > 8000)
             {
                 // Stop bit detect
+                if(_status == IRStatus::signal_detected)
+                {
+                    return -1;
+                }
+
                 _status = IRStatus::stop;
                 break;
             }
@@ -171,14 +180,17 @@ int IRReceiver::getIRData(IRData &data, long timeout_ms)
         {
             if(low_time > 0)
             {
+
                 switch (_status)
                 {
                     case IRStatus::signal_detected:
+
                         if(_scanLeaderCode(data, high_time, low_time) == -1)
                         {
                             // invalid leader code
                             return -1;
                         }
+
                         break;
                     case IRStatus::leader_detected:
                         databit = _getDataBit(high_time, low_time);
