@@ -1,10 +1,10 @@
 #include <arduino.h>
 #include "ir_receiver.h"
 
-IRReceiver::IRReceiver(byte pin_receiver, bool invert_out)
+IRReceiver::IRReceiver(byte pin_receiver, bool invert_in)
 {
     _pin = pin_receiver;
-    if(invert_out)
+    if(invert_in)
     {
         _input_high = 0;
         _input_low = 1;

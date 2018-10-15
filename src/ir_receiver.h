@@ -23,7 +23,7 @@ private:
     int _scanLeaderCode(IRData &data, long high_time, long low_time, bool format_autodetect = true);
     int _getDataBit(long high_time, long low_time);
 public:
-    IRReceiver(byte pin_receiver, bool invert_out = false);
+    IRReceiver(byte pin_receiver, bool invert_in = false);
     byte input();
     void getIR(IRWave &wave, long samples = -1);
     int getIRData(IRData &data, long timeout_ms = -1);
