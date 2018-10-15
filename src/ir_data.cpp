@@ -2,11 +2,36 @@
 #include "ir_data.h"
 
 IRData::IRData()
-    :_buffer({0}), _data_len_bits(0)
+    :_buffer({0})
 {
+    _data_len_bits = 0;
     format = IRDataFormat::AUTO;
     is_repeat_code = false;
     _bit_itr = 0;
+}
+
+IRData::IRData(String data_hex_str, IRDataFormat format)
+    :_buffer({0})
+{
+    setDataByString(data_hex_str);
+    this->format = format;
+    is_repeat_code = false;
+    _bit_itr = 0;
+}
+
+int IRData::setDataByString(String data_hex_str)
+{
+    unsigned long len = data_hex_str.length();
+    if(len <= 0)
+    {
+        return -1;
+    }
+
+    clear();
+    for(auto i=0; i<len; i++)
+    {
+        appendByHexChar(data_hex_str[i]);
+    }
 }
 
 const int IRData::capacity()
@@ -38,6 +63,50 @@ long IRData::append(byte databit)
     {
         _buffer[byte_idx] = (_buffer[byte_idx] << 1) | (databit & 0x01);
         return ++_data_len_bits;
+    }
+    return -1;
+}
+
+long IRData::appendByte(byte bytedata)
+{
+    long byte_idx = _data_len_bits >> 3;
+    _data_len_bits &= 0xFFFFFFF8;
+    if(_data_len_bits < (capacity() << 3))
+    {
+        _buffer[byte_idx] = bytedata;
+        _data_len_bits += 8;
+        return _data_len_bits;
+    }
+    return -1;
+}
+
+long IRData::appendHex(byte hexdata)
+{
+    long byte_idx = _data_len_bits >> 3;
+    _data_len_bits &= 0xFFFFFFFC;
+
+    if(_data_len_bits < (capacity() << 3))
+    {
+        _buffer[byte_idx] = (_buffer[byte_idx] << 4) | (hexdata & 0xF);
+        _data_len_bits += 4;
+        return _data_len_bits;
+    }
+    return -1;
+}
+
+long IRData::appendByHexChar(char hex_char)
+{
+    if(hex_char >= '0' && hex_char <='9')
+    {
+        return appendHex(byte(hex_char - '0'));
+    }
+    else if(hex_char >= 'a' && hex_char <= 'f')
+    {
+        return appendHex(byte(hex_char - 'a') + 0xA);
+    }
+    else if(hex_char >= 'A' && hex_char <= 'F')
+    {
+        return appendHex(byte(hex_char - 'A') + 0xA);
     }
     return -1;
 }

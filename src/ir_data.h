@@ -22,9 +22,14 @@ public:
     bool is_repeat_code;
 
     IRData();
+    IRData(String data_hex_str, IRDataFormat format = IRDataFormat::AUTO);
     void clear();
     long append(byte databit);
+    long appendByte(byte bytedata);
+    long appendHex(byte hexdata);
+    long appendByHexChar(char hex_char);
     int fetch();
+    int setDataByString(String data_hex_str);
     const int capacity();
     const int bitLengh();
     const int get(int index);
