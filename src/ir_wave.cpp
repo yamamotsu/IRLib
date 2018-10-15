@@ -1,3 +1,4 @@
+#include <arduino.h>
 #include "ir_wave.h"
 
 IRWave::IRWave(int sampling_period_us)
@@ -12,7 +13,7 @@ IRWave::IRWave(int sampling_period_us)
 
 IRWave::~IRWave()
 {
-  
+
 }
 
 const long IRWave::samples()
